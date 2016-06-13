@@ -6,7 +6,7 @@
             [codox "0.8.12"]
             [s3-wagon-private "1.1.2"]]
 
-  :dependencies [[org.clojure/clojure "1.7.0"]
+  :dependencies [[org.clojure/clojure "1.8.0"]
                  [org.clojure/core.async "0.1.346.0-17112a-alpha"]
                  [environ "1.0.0"]
                  [org.clojure/java.classpath "0.2.2"]
