@@ -56,11 +56,11 @@
                        (enumeration-seq (.entries jarfile)))]))
        (filter #(> (count (second %)) 0))
        ;; Flatten the config map (make sure that all of the values map to their source)
-       ((fn [m] (apply concat (for [[k v] m
-                                    val_ v]
-                                [k val_]))))
-       (map (fn [[jarfile jarentry]]
-              (println "je: " (type jarentry))
+       ((fn [m]
+          (for [[k v] m
+                val_ v]
+            [k val_])))
+       (mapv (fn [[jarfile jarentry]]
            [(str (.getName jarfile) "/" (.getName jarentry))
             (io/reader (.getInputStream jarfile jarentry))]))))
 

@@ -2,7 +2,7 @@
 
 Add this to your project.clj:
 ```
-[thinktopic/think.config "0.2.1"]
+[thinktopic/think.config "0.2.2"]
 ```
 
 `think.config` is a library that creates  an abstraction around configuration
