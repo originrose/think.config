@@ -1,4 +1,9 @@
-# think.config
+# think.config [![Build Status](https://travis-ci.com/thinktopic/think.config.svg?token=64MLcsqSTjE7SCpD6LB1&branch=master)](https://travis-ci.com/thinktopic/think.config)
+
+Add this to your project.clj:
+```
+[thinktopic/think.config "0.2.0"]
+```
 
 `think.config` is a library that creates  an abstraction around configuration
 files. It works by reading config files named `*-config.edn` from the resources
