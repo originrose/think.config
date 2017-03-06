@@ -112,6 +112,15 @@
     (init-config-map))
   *config-map*)
 
+(defn get-configurable-options
+  "This function returns all keys that are specified in .edn files, excluding
+  the automatic variables such as os-*."
+  []
+  (-> (get-config-edn-values)
+      (keys)
+      (set)
+      (set/difference #{:os-arch :os-name :os-version})))
+
 (defn get-config-table-str
   []
   (init-config-map)

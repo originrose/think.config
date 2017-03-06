@@ -1,7 +1,7 @@
 (ns think.config.config-test
-  (:require
-      [clojure.test :refer :all]
-      [think.config.core :refer :all]))
+  (:require [clojure.set :as set]
+            [clojure.test :refer :all]
+            [think.config.core :refer :all]))
 
 (deftest config-test
   (testing "Config Test"
@@ -25,3 +25,6 @@
 
 (deftest print-config-map
   (is (string? (get-config-table-str))))
+
+(deftest configurable-options-test
+  (is (empty? (set/intersection #{:os-arch :os-name :os-version} (get-configurable-options)))))

@@ -29,8 +29,8 @@ decided by base of the precedence heirarchy defined below.
 
 #### Overwriting config values
 
-In the event that you wish to programatically overwrite a config setting, it is possible to use the 
-`with-config` macro as follows:
+In the event that you wish to programatically overwrite a config setting, it is
+possible to use the `with-config` macro as follows:
 
 ```
 (require '[think.config :refer [get-config with-config]])
