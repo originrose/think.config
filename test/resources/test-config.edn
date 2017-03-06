@@ -1,0 +1,9 @@
+{
+ :number 42
+ :string "hello world"
+ :boolean true
+ :overwrite 30
+ :app-config-overwrite 0
+ :user-config-overwrite 0
+ :env-config-overwrite false
+ }

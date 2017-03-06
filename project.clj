@@ -1,4 +1,4 @@
-(defproject thinktopic/think.config "0.1.0-SNAPSHOT"
+(defproject thinktopic/think.config "0.2.0-SNAPSHOT"
   :description "A configuartion library."
   :url "http://github.com/thinktopic/think.config"
 
@@ -7,17 +7,24 @@
             [s3-wagon-private "1.1.2"]]
 
   :dependencies [[org.clojure/clojure "1.8.0"]
-                 [org.clojure/core.async "0.1.346.0-17112a-alpha"]
-                 [environ "1.0.0"]
-                 [org.clojure/java.classpath "0.2.2"]
-                 [com.taoensso/nippy "2.11.1"]
-                 [clojurewerkz/propertied "1.2.0"]
-                 [com.novemberain/langohr "3.5.1"]]
+                 [environ "1.1.0"]
+                 [org.clojure/java.classpath "0.2.3"]]
 
   :profiles {:dev {:repl-options {:init-ns user}
-                   :dependencies [[thinktopic/vault-clj "0.2.1"]]
                    :source-paths ["dev"]}
+             :test {:resource-paths ["test/resources"]
+                    :env {:overwrite "80"
+                          :env-config-overwrite "true"}}
              :uberjar {:aot :all}}
+
+  :release-tasks [["vcs" "assert-committed"]
+                  ["change" "version" "leiningen.release/bump-version" "release"]
+                  ["vcs" "commit"]
+                  ["vcs" "tag" "" "--no-sign"] ; disable signing
+                  ["deploy"]
+                  ["change" "version" "leiningen.release/bump-version"]
+                  ["vcs" "commit"]
+                  ["vcs" "push"]]
 
   :repositories  {"snapshots"  {:url "s3p://thinktopic.jars/snapshots/"
                                 :passphrase :env
@@ -28,5 +35,4 @@
                                :passphrase :env
                                :username :env
                                :snapshots false
-                               :sign-releases false}}
-  )
+                               :sign-releases false}})
