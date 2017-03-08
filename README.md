@@ -59,6 +59,25 @@ In summary, this hierarchy results in the following ordering (furthest to the le
 
 One major advantage over other configuration options that `think.config` provides is types. The bottom of the configuration stack defines the type (i.e. when a library specifies a default value, it also specifies the type because the `.edn` files are typed. Any configuration layer that overwrites this value gets coerced to the type specified at the base. As a consequence, things specified through the environment (or the command line) which come in a strings will be converted to the appropriate type and the application can read these types without performing the conversion on its own.
 
+### Sources Map
+
+The sources map (obtained by calling `(get-config-table-str)`) provides a table like the on shown below. This is convenient to show at start up so that it is possible to see where configuration options are being set and what the types are (e.g. strings are shown in "quotes"). If something is set by the environment the source will be listed as `environment` and if it is set with the `(with-config)` macro it will be listed as `with-config`.
+
+```
+Key                    Value            Source
+-------------------------------------------------------
+:app-config-overwrite  1                app-config.edn
+:boolean               true             test-config.edn
+:env-config-overwrite  false            environment
+:number                42               test-config.edn
+:os-arch               "amd64"          zzz-config.edn
+:os-name               "Linux"          zzz-config.edn
+:os-version            "4.8.0-26-generic" zzz-config.edn
+:overwrite             30               test-config.edn
+:string                "hello world"    with-config
+:user-config-overwrite 2                user-config.edn
+```
+
 ### Why another configuration library?
 
 The advantage to using the config library is that it provies several facilities
