@@ -53,7 +53,11 @@ through the environment will take precedence over those specified in
 `*-config.edn` files.
 
 In summary, this hierarchy results in the following ordering (furthest to the left takes precedence):
-`with-config` ➡ `environment` ➡ `user-config.edn` ➡ `app-config.edn` ➡ `libraries (a-z)`
+`with-config` ➡ `environment` ➡ `:env` in profile.clj ➡  `user-config.edn` ➡ `app-config.edn` ➡ `libraries (a-z)`
+
+### Types
+
+One major advantage over other configuration options that `think.config` provides is types. The bottom of the configuration stack defines the type (i.e. when a library specifies a default value, it also specifies the type because the `.edn` files are typed. Any configuration layer that overwrites this value gets coerced to the type specified at the base. As a consequence, things specified through the environment (or the command line) which come in a strings will be converted to the appropriate type and the application can read these types without performing the conversion on its own.
 
 ### Why another configuration library?
 
