@@ -1,5 +1,6 @@
 (ns think.config.config-test
   (:require [clojure.set :as set]
+            [clojure.string :as s]
             [clojure.test :refer :all]
             [think.config.core :refer :all]))
 
@@ -28,3 +29,15 @@
 
 (deftest configurable-options-test
   (is (empty? (set/intersection #{:os-arch :os-name :os-version} (get-configurable-options)))))
+
+(deftest with-config-updates-sources-test
+  (testing "Make sure with-config updates the soruces map."
+    (with-config [:user-config-overwrite "3"]
+      (->> (get-config-table-str)
+           (s/split-lines)
+           (filter #(.contains % "user-config-overwrite"))
+           (first)
+           ((fn [x] (s/split x #" ")))
+           (last)
+           (= "with-config")
+           (is)))))

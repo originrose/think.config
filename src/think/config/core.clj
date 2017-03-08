@@ -8,7 +8,7 @@
             [clojure.java.io :as io]
             [clojure.pprint :as pprint]))
 
-(def config-sources* (atom {}))
+(def ^:dynamic *config-sources* {})
 (def ^:dynamic *config-map* nil)
 
 (defn- input-stream-to-map
@@ -87,7 +87,7 @@
          (reduce (fn [eax [path file]]
                    (let [m (input-stream-to-map file)]
                      (doseq [[k _] m]
-                       (swap! config-sources* assoc k (short-name-fn path)))
+                       (alter-var-root (var *config-sources*) #(assoc % k (short-name-fn path))))
                      (coercing-merge eax m))) {}))))
 
 (defn- build-config-env
@@ -99,9 +99,8 @@
         print-map (into {} (filter #(contains? config-map (% 0)) final-map))]
     (doseq [k (clojure.set/intersection (set (keys env))
                                         (set (keys print-map)))]
-      (swap! config-sources* assoc k "environment"))
+      (alter-var-root (var *config-sources*) #(assoc % k "environment")))
     final-map))
-
 
 (defn- init-config-map []
   (alter-var-root (var *config-map*) (fn [_] (build-config-env))))
@@ -133,7 +132,7 @@
                    (map (fn [[k v]]
                           {:key k
                            :value v
-                           :source (get @config-sources* k)})))
+                           :source (get *config-sources* k)})))
         key-width (min 30 (apply max (map (comp count str :key) table)))
         val-width (min 30 (apply max (map (comp count str :value) table)))
         src-width (min 20 (apply max (map (comp count str :source) table)))]
@@ -170,6 +169,10 @@
 
 (defmacro with-config
   [config-key-vals & body]
-  `(let [new-map# (#'think.config.core/coercing-merge (get-config-map) (apply hash-map ~config-key-vals))]
-     (with-bindings {#'*config-map* new-map#}
+  `(let [new-map# (#'think.config.core/coercing-merge (get-config-map) (apply hash-map ~config-key-vals))
+         new-sources# (->> (take-nth 2 ~config-key-vals)
+                           (map (fn [new-var#] [new-var# "with-config"]))
+                           (into {}))]
+     (with-bindings {#'*config-map* new-map#
+                     #'*config-sources* (merge *config-sources* new-sources#)}
        ~@body)))
