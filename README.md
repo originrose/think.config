@@ -52,6 +52,9 @@ Next, values set either through the `:env` key within a leiningen profile or
 through the environment will take precedence over those specified in
 `*-config.edn` files.
 
+In summary, this hierarchy results in the following ordering (furthest to the left takes precedence):
+`with-config` ➡ `environment` ➡ `user-config.edn` ➡ `app-config.edn` ➡ `libraries (a-z)`
+
 ### Why another configuration library?
 
 The advantage to using the config library is that it provies several facilities
