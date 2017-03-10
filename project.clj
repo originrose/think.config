@@ -4,7 +4,7 @@
 
   :plugins [[lein-environ "1.0.0"]
             [codox "0.8.12"]
-            [s3-wagon-private "1.1.2"]]
+            [s3-wagon-private "1.3.0"]]
 
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [environ "1.1.0"]
