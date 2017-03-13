@@ -27,12 +27,12 @@
                   ["vcs" "push"]]
 
   :repositories  {"snapshots"  {:url "s3p://thinktopic.jars/snapshots/"
-                                :passphrase :env
-                                :username :env
+                                :passphrase :env/aws-secret-access-key
+                                :username :env/aws-access-key-id
                                 :releases false
                                 :sign-releases false}
                   "releases"  {:url "s3p://thinktopic.jars/releases/"
-                               :passphrase :env
-                               :username :env
+                               :passphrase :env/aws-secret-access-key
+                               :username :env/aws-access-key-id
                                :snapshots false
                                :sign-releases false}})
