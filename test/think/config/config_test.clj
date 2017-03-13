@@ -41,3 +41,9 @@
            (last)
            (= "with-config")
            (is)))))
+
+(deftest string-false-is-false
+  (with-config [:boolean "false"]
+    (is (false? (get-config :boolean))))
+  (with-config [:boolean "true"]
+    (is (true? (get-config :boolean)))))

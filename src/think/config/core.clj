@@ -43,7 +43,7 @@
                                       (if (and (string? v) (not-empty v) (= \: (first v)))
                                         (keyword (subs v 1))
                                         (keyword v)))
-                  (instance? Boolean d) (assoc dest-map k (Boolean. (str v)))
+                  (instance? Boolean d) (assoc dest-map k (boolean (Boolean. (str v))))
                   :default (assoc dest-map k (edn/read-string  v)))))) dest src))
 
 (defn- get-config-streams
