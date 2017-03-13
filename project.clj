@@ -1,4 +1,4 @@
-(defproject thinktopic/think.config "0.2.4"
+(defproject thinktopic/think.config "0.2.5-SNAPSHOT"
   :description "A configuartion library."
   :url "http://github.com/thinktopic/think.config"
 
