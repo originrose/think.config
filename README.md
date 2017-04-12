@@ -2,7 +2,7 @@
 
 Add this to your project.clj:
 ```
-[thinktopic/think.config "0.2.4"]
+[thinktopic/think.config "0.2.5"]
 ```
 
 `think.config` is a library that creates  an abstraction around configuration
@@ -81,10 +81,10 @@ Key                    Value            Source
 ### Why another configuration library?
 
 The advantage to using the config library is that it provies several facilities
-beyond a standard config reader. 
+beyond a standard config reader.
 * All of the settings are placed into the applications resource directory,
   which means that it's obvious which knobs a user can turn to configure the
-  application. 
+  application.
 * The config settings are all available to the user through the
   `get-config-table-str` function. This means that it is clear to see how the
   application was configured. Note that string values will be quoted when returned

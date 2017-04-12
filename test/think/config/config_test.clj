@@ -37,10 +37,20 @@
            (s/split-lines)
            (filter #(.contains % "user-config-overwrite"))
            (first)
-           ((fn [x] (s/split x #" ")))
+           ((fn [x] (s/split x #"\s+")))
            (last)
            (= "with-config")
            (is)))))
+
+(deftest environ-updates-sources
+  (->> (get-config-table-str)
+       (s/split-lines)
+       (filter #(.contains % "env-config-overwrite"))
+       (first)
+       ((fn [x] (s/split x #"\s+")))
+       (last)
+       (= "environment")
+       (is)))
 
 (deftest string-false-is-false
   (with-config [:boolean "false"]

@@ -27,7 +27,7 @@
   "Takes two maps and merges the source into the dest while trying to coerce
   values into the type of the destination map. This is so that a base config
   (e.g. in a library) can specify types and they can be overwritten by strings
-  from the outside (e.g. either via the command line or the environment) and 
+  from the outside (e.g. either via the command line or the environment) and
   have those values become the correct type."
   [dest src]
   (reduce (fn [dest-map [k v]]
@@ -44,7 +44,9 @@
                                         (keyword (subs v 1))
                                         (keyword v)))
                   (instance? Boolean d) (assoc dest-map k (boolean (Boolean. (str v))))
-                  :default (assoc dest-map k (edn/read-string  v)))))) dest src))
+                  :default (assoc dest-map k (edn/read-string  v))))))
+          dest
+          src))
 
 (defn- get-config-streams
   "Returns BufferedReaders for *-config.edn files found in jar-files."
@@ -96,7 +98,7 @@
   (let [config-map (get-config-edn-values)
         final-map (coercing-merge config-map env)
         ;;Only print keys from config files.  Do not print out entire env
-        print-map (into {} (filter #(contains? config-map (% 0)) final-map))]
+        print-map (into {} (filter #(contains? config-map (first %)) final-map))]
     (doseq [k (clojure.set/intersection (set (keys env))
                                         (set (keys print-map)))]
       (alter-var-root (var *config-sources*) #(assoc % k "environment")))
@@ -115,18 +117,16 @@
   "This function returns all keys that are specified in .edn files, excluding
   the automatic variables such as os-*."
   []
-  (-> (get-config-edn-values)
+  (-> (get-config-map)
       (keys)
       (set)
       (set/difference #{:os-arch :os-name :os-version})))
 
 (defn get-config-table-str
   []
-  (init-config-map)
-  (let [config-map (get-config-edn-values)
-        final-map (coercing-merge config-map env)
+  (let [config-map (get-config-map)
         ;;Only print keys from config files.  Do not print out entire env
-        print-map (into {} (filter #(contains? config-map (% 0)) final-map))
+        print-map (into {} (filter #(contains? config-map (first %)) config-map))
         table (->> print-map
                    (sort-by first)
                    (map (fn [[k v]]
