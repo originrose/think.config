@@ -124,13 +124,12 @@
       (set/difference #{:os-arch :os-name :os-version})))
 
 (defn get-config-table-str
+  "Returns a nice string representation of the current config map."
   []
-  (let [config-map (get-config-edn-values)
-        ;;Only print keys from config files.  Do not print out entire env
-        print-map (->> (coercing-merge config-map env)
-                       (filter #(contains? config-map (first %)))
-                       (into {}))
-        table (->> print-map
+  (let [edn-config-key-set (set (keys (get-config-edn-values)))
+        table (->> (get-config-map)
+                   ;;Only print keys from config files.  Do not print out entire env
+                   (filter #(edn-config-key-set (first %)))
                    (sort-by first)
                    (map (fn [[k v]]
                           {:key k
