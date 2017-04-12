@@ -89,7 +89,8 @@
          (reduce (fn [eax [path file]]
                    (let [m (input-stream-to-map file)]
                      (doseq [[k _] m]
-                       (alter-var-root (var *config-sources*) #(assoc % k (short-name-fn path))))
+                       (when-not (contains? *config-sources* k)
+                         (alter-var-root (var *config-sources*) #(assoc % k (short-name-fn path)))))
                      (coercing-merge eax m))) {}))))
 
 (defn- build-config-env
@@ -124,9 +125,11 @@
 
 (defn get-config-table-str
   []
-  (let [config-map (get-config-map)
+  (let [config-map (get-config-edn-values)
         ;;Only print keys from config files.  Do not print out entire env
-        print-map (into {} (filter #(contains? config-map (first %)) config-map))
+        print-map (->> (coercing-merge config-map env)
+                       (filter #(contains? config-map (first %)))
+                       (into {}))
         table (->> print-map
                    (sort-by first)
                    (map (fn [[k v]]
