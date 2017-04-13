@@ -20,8 +20,12 @@
     (edn/read (java.io.PushbackReader. s))))
 
 (defn- is-config-file?
-  [file]
+  [^java.io.File file]
   (.contains (.getName file) "config.edn"))
+
+(defn- is-config-entry?
+  [^java.util.jar.JarEntry entry]
+  (.contains (.getName entry) "config.edn"))
 
 (defn- coercing-merge
   "Takes two maps and merges the source into the dest while trying to coerce
@@ -52,9 +56,9 @@
   "Returns BufferedReaders for *-config.edn files found in jar-files."
   [jar-files]
   (->> jar-files
-       (map (fn [jarfile]
+       (map (fn [^java.util.jar.JarFile jarfile]
               [jarfile
-               (filter is-config-file?
+               (filter is-config-entry?
                        (enumeration-seq (.entries jarfile)))]))
        (filter #(> (count (second %)) 0))
        ;; Flatten the config map (make sure that all of the values map to their source)
@@ -62,7 +66,7 @@
           (for [[k v] m
                 val_ v]
             [k val_])))
-       (mapv (fn [[jarfile jarentry]]
+       (mapv (fn [[^java.util.jar.JarFile jarfile ^java.util.jar.JarEntry jarentry]]
            [(str (.getName jarfile) "/" (.getName jarentry))
             (io/reader (.getInputStream jarfile jarentry))]))))
 
@@ -81,7 +85,7 @@
          (map file-seq)
          (flatten)
          (filter is-config-file?)
-         (map (fn [f] [(.getName f) (io/reader f)]))
+         (map (fn [^java.io.File f] [(.getName f) (io/reader f)]))
          (concat (get-config-streams (cp/classpath-jarfiles)))
          (sort-by (comp short-name-fn first))
          (move-to-end-fn "app-config.edn")
