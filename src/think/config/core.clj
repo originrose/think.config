@@ -150,21 +150,12 @@
           (println (format (str "%-" key-width "s %-" val-width "s %-" src-width "s")
                            key (if (string? value) (format "\"%s\"" value) value) source)))))))
 
-(defn unchecked-get-config
-  [k]
-  ((get-config-map) k))
-
 (defn get-config
   "Get App Config. Accepts a key such as \"PORT\" or :port."
-  ([k]
-   (let [retval (unchecked-get-config k)]
-     (when (nil? retval)
-       (throw (IllegalArgumentException. (format "Missing config value: %s" k))))
-     retval))
-  ([k read-string?]
-   (if (and (string? (get-config k)) read-string?)
-     (read-string (get-config k))
-     (get-config k))))
+  [k]
+   (if-not (contains? (get-config-map) k)
+     (throw (IllegalArgumentException. (format "Missing config value: %s" k))))
+   ((get-config-map) k))
 
 (defn set-config!
   "Very dangerous, but useful during testing.  Set a config value"

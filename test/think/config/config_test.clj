@@ -20,6 +20,15 @@
     (with-config [:user-config-overwrite "3"]
       (is (= (get-config :user-config-overwrite) 3)))))
 
+(deftest nil-value-test
+  (testing "Make sure with-config can coerce values properly."
+    (with-config [:nil-value nil]
+      (is (= (get-config :nil-value) nil)))))
+
+(deftest non-existant-key-test
+  (testing "Make sure with-config can coerce values properly."
+    (is (thrown? IllegalArgumentException (get-config :doesnt-exist)))))
+
 (deftest profile-env-test
   (testing "Make sure entries in the profile env work."
     (is (= (get-config :env-config-overwrite) true))))
