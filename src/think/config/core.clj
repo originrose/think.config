@@ -78,7 +78,8 @@
   (let [short-name-fn (partial re-find #"[^\/]+$")
         move-to-end-fn (fn [entry coll]
                          (let [m (group-by #(= (short-name-fn (first %)) entry) coll)]
-                           (concat (get m false) (get m true))))]
+                           (concat (get m false) (get m true))))
+        update-config-sources? (empty? *config-sources*)]
     (->> (cp/classpath-directories)
          (map file-seq)
          (flatten)
@@ -90,8 +91,8 @@
          (move-to-end-fn "user-config.edn")
          (reduce (fn [eax [path file]]
                    (let [m (input-stream-to-map file)]
-                     (doseq [[k _] m]
-                       (when-not (contains? *config-sources* k)
+                     (when update-config-sources?
+                       (doseq [[k _] m]
                          (alter-var-root (var *config-sources*) #(assoc % k (short-name-fn path)))))
                      (coercing-merge eax m))) {}))))
 
