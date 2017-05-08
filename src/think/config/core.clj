@@ -77,10 +77,8 @@
   []
   (let [short-name-fn (partial re-find #"[^\/]+$")
         move-to-end-fn (fn [entry coll]
-                         (if ((set (map first coll)) entry)
-                           (let [match (first (filter #(= (first %) entry) coll))]
-                             (concat (remove #(= (first %) entry) coll) [match]))
-                           coll))]
+                         (let [m (group-by #(= (short-name-fn (first %)) entry) coll)]
+                           (concat (get m false) (get m true))))]
     (->> (cp/classpath-directories)
          (map file-seq)
          (flatten)
