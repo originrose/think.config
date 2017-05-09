@@ -6,7 +6,7 @@
 
 Add this to your project.clj:
 ```
-[thinktopic/think.config "0.2.7"]
+[thinktopic/think.config "0.3.0"]
 ```
 
 The library works by reading config files named `*-config.edn` from the resources
