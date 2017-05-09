@@ -1,6 +1,4 @@
 (ns think.config.core
-  "A Config namespace for deriving app config.  This will pull from your
-  environment or lein"
   (:require [environ.core :refer [env]]
             [clojure.java.classpath :as cp]
             [clojure.set :as set]
@@ -8,13 +6,14 @@
             [clojure.java.io :as io]
             [clojure.pprint :as pprint]))
 
-(def ^:dynamic *config-sources* {})
 (def ^:dynamic *config-map* nil)
+(def ^:dynamic *config-sources* {})
+(def ^:dynamic *config-keys* #{}) ;; Only keys found in config _files_.
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Helper functions
 (defn- input-stream-to-map
-  "Helper function used when reading configs from jars in the class-path. Takes
-  an input stream and returns a map for the data contained in that input
-  stream."
+  "Helper function for reading a classpath jar into a map."
   [stream]
   (with-open [^java.io.BufferedReader s stream]
     (edn/read (java.io.PushbackReader. s))))
@@ -23,7 +22,7 @@
   [^java.io.File file]
   (.contains (.getName file) "config.edn"))
 
-(defn- is-config-entry?
+(defn- is-config-jarentry?
   [^java.util.jar.JarEntry entry]
   (.contains (.getName entry) "config.edn"))
 
@@ -58,7 +57,7 @@
   (->> jar-files
        (map (fn [^java.util.jar.JarFile jarfile]
               [jarfile
-               (filter is-config-entry?
+               (filter is-config-jarentry?
                        (enumeration-seq (.entries jarfile)))]))
        (filter #(> (count (second %)) 0))
        ;; Flatten the config map (make sure that all of the values map to their source)
@@ -70,7 +69,7 @@
            [(str (.getName jarfile) "/" (.getName jarentry))
             (io/reader (.getInputStream jarfile jarentry))]))))
 
-(defn- get-config-edn-values
+(defn- file-config
   "Loops through all of the .edn files in the jars as well as resources and
   coerce-merges them reverse alphabetically with app-config and user-config
   taking precedence over the remaining, respectively."
@@ -93,28 +92,26 @@
                    (let [m (input-stream-to-map file)]
                      (when update-config-sources?
                        (doseq [[k _] m]
-                         (alter-var-root (var *config-sources*) #(assoc % k (short-name-fn path)))))
+                         (alter-var-root #'*config-keys* #(conj % k))
+                         (alter-var-root #'*config-sources* #(assoc % k (short-name-fn path)))))
                      (coercing-merge eax m))) {}))))
 
-(defn- build-config-env
+(defn- build-config
   "Squashes the environment onto the config-*.edn files."
   []
-  (let [config-map (get-config-edn-values)
-        final-map (coercing-merge config-map env)
-        ;;Only print keys from config files.  Do not print out entire env
-        print-map (into {} (filter #(contains? config-map (first %)) final-map))]
-    (doseq [k (clojure.set/intersection (set (keys env))
-                                        (set (keys print-map)))]
-      (alter-var-root (var *config-sources*) #(assoc % k "environment")))
+  (let [final-map (coercing-merge (file-config) env)
+        print-map (->> final-map
+                       (filter #(*config-keys* (first %)))
+                       (into {}))]
+    (doseq [k (set/intersection (set (keys env))
+                                (set (keys print-map)))]
+      (alter-var-root #'*config-sources* #(assoc % k "environment")))
     final-map))
-
-(defn- init-config-map []
-  (alter-var-root (var *config-map*) (fn [_] (build-config-env))))
 
 (defn get-config-map
   []
   (when-not *config-map*
-    (init-config-map))
+    (alter-var-root #'*config-map* (fn [_] (build-config))))
   *config-map*)
 
 (defn get-configurable-options
@@ -129,10 +126,8 @@
 (defn get-config-table-str
   "Returns a nice string representation of the current config map."
   []
-  (let [edn-config-key-set (set (keys (get-config-edn-values)))
-        table (->> (get-config-map)
-                   ;;Only print keys from config files.  Do not print out entire env
-                   (filter #(edn-config-key-set (first %)))
+  (let [table (->> (get-config-map)
+                   (filter #(*config-keys* (first %)))
                    (sort-by first)
                    (map (fn [[k v]]
                           {:key k
@@ -150,11 +145,12 @@
                            key (if (string? value) (format "\"%s\"" value) value) source)))))))
 
 (defn unchecked-get-config
+  "Get app config. Unlike `get-config`, doesn't coerce arguments and can return nil for missing config."
   [k]
   ((get-config-map) k))
 
 (defn get-config
-  "Get App Config. Accepts a key such as \"PORT\" or :port."
+  "Get app config. Accepts a key such as \"PORT\" or :port."
   ([k]
    (let [retval (unchecked-get-config k)]
      (when (nil? retval)
@@ -166,18 +162,21 @@
      (get-config k))))
 
 (defn set-config!
-  "Very dangerous, but useful during testing.  Set a config value"
+  "Very dangerous, but useful during testing. Set a config value.
+  See: `with-config`"
   [key value]
   (let [old-map (get-config-map)]
-    (alter-var-root (var *config-map*) assoc key value)
+    (alter-var-root #'*config-map* assoc key value)
     (old-map key)))
 
 (defmacro with-config
   [config-key-vals & body]
   `(let [new-map# (#'think.config.core/coercing-merge (get-config-map) (apply hash-map ~config-key-vals))
-         new-sources# (->> (take-nth 2 ~config-key-vals)
+         new-keys# (take-nth 2 ~config-key-vals)
+         new-sources# (->> new-keys#
                            (map (fn [new-var#] [new-var# "with-config"]))
                            (into {}))]
      (with-bindings {#'*config-map* new-map#
-                     #'*config-sources* (merge *config-sources* new-sources#)}
+                     #'*config-sources* (merge *config-sources* new-sources#)
+                     #'*config-keys* (set/union *config-keys* (set new-keys#))}
        ~@body)))
