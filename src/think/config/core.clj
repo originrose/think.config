@@ -157,9 +157,10 @@
        (throw (IllegalArgumentException. (format "Missing config value: %s" k))))
      retval))
   ([k read-string?]
-   (if (and (string? (get-config k)) read-string?)
-     (read-string (get-config k))
-     (get-config k))))
+   (let [raw-config (get-config k)]
+     (if (and (string? raw-config) read-string?)
+       (edn/read-string raw-config)
+       raw-config))))
 
 (defn set-config!
   "Very dangerous, but useful during testing. Set a config value.

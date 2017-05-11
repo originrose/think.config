@@ -57,3 +57,8 @@
     (is (false? (get-config :boolean))))
   (with-config [:boolean "true"]
     (is (true? (get-config :boolean)))))
+
+(deftest read-string-test
+  (with-config [:m "{:a :b}"]
+    (is (nil? (:a (get-config :m))))
+    (is (= :b (:a (get-config :m true))))))
