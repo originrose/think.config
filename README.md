@@ -106,5 +106,5 @@ beyond a standard config reader.
   means that they can be set using environment variables and read as actual
   types within the code without having to perform something like `read-string`
   on each of them.
-* There is a fairly simple way to map them also to command line parameters 
-  [main.clj](http://github.com/thinktopic/think.release/blob/master/src/think/release/main.clj).
+* There is a fairly simple way to map them to 
+  [command line parameters](examples/tools-cli/src/tools_cli/core.clj).
