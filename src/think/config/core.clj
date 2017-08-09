@@ -86,6 +86,7 @@
          (map (fn [^java.io.File f] [(.getName f) (io/reader f)]))
          (concat (get-config-streams (cp/classpath-jarfiles)))
          (sort-by (comp short-name-fn first))
+         (reverse)
          (move-to-end-fn "app-config.edn")
          (move-to-end-fn "user-config.edn")
          (reduce (fn [eax [path file]]

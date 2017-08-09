@@ -3,6 +3,7 @@
  :string "hello world"
  :boolean true
  :overwrite 30
+ :file-order-overwrite false
  :app-config-overwrite 0
  :user-config-overwrite 0
  :env-config-overwrite false

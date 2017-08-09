@@ -62,3 +62,7 @@
   (with-config [:m "{:a :b}"]
     (is (nil? (:a (get-config :m))))
     (is (= :b (:a (get-config :m true))))))
+
+(deftest file-order-test
+  (testing "Make sure files are merged in reverse-alphabetical order."
+    (is (= (get-config :file-order-overwrite) true))))
