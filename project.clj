@@ -2,8 +2,7 @@
   :description "A configuartion library."
   :url "http://github.com/thinktopic/think.config"
 
-  :plugins [[lein-environ "1.0.0"]
-            [s3-wagon-private "1.3.0"]]
+  :plugins [[lein-environ "1.0.0"]]
 
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [environ "1.1.0"]
@@ -11,13 +10,4 @@
 
   :profiles {:test {:resource-paths ["test/resources"]
                     :env {:overwrite "80"
-                          :env-config-overwrite "true"}}}
-
-  :release-tasks [["vcs" "assert-committed"]
-                  ["change" "version" "leiningen.release/bump-version" "release"]
-                  ["vcs" "commit"]
-                  ["vcs" "tag" "" "--no-sign"] ; disable signing
-                  ["deploy" "clojars"]
-                  ["change" "version" "leiningen.release/bump-version"]
-                  ["vcs" "commit"]
-                  ["vcs" "push"]])
+                          :env-config-overwrite "true"}}})
