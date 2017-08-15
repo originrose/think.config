@@ -13,13 +13,4 @@
                           :env-config-overwrite "true"
                           :complex-type-env-overwrite-map "{:a 1 :b 3}"
                           :complex-type-env-overwrite-vec "[:c :b :a]"
-                          :complex-type-env-overwrite-seq "(:c :b :a)"}}}
-
-  :release-tasks [["vcs" "assert-committed"]
-                  ["change" "version" "leiningen.release/bump-version" "release"]
-                  ["vcs" "commit"]
-                  ["vcs" "tag" "" "--no-sign"] ; disable signing
-                  ["deploy" "clojars"]
-                  ["change" "version" "leiningen.release/bump-version"]
-                  ["vcs" "commit"]
-                  ["vcs" "push"]])
+                          :complex-type-env-overwrite-seq "(:c :b :a)"}}})
