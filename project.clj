@@ -1,9 +1,8 @@
-(defproject thinktopic/think.config "0.3.1-SNAPSHOT"
+(defproject thinktopic/think.config "0.3.2-SNAPSHOT"
   :description "A configuartion library."
   :url "http://github.com/thinktopic/think.config"
 
-  :plugins [[lein-environ "1.0.0"]
-            [s3-wagon-private "1.3.0"]]
+  :plugins [[lein-environ "1.0.0"]]
 
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [environ "1.1.0"]
