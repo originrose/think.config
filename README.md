@@ -1,6 +1,8 @@
 # think.config [![Build Status](https://travis-ci.com/thinktopic/think.config.svg?token=64MLcsqSTjE7SCpD6LB1&branch=master)](https://travis-ci.com/thinktopic/think.config)
 
-`think.config` is a library that abstracts configuration from files and env.
+[![Clojars Project](https://img.shields.io/clojars/v/thinktopic/think.config.svg)](https://clojars.org/thinktopic/think.config)
+
+`think.config` is a Clojure library that abstracts configuration from files and env.
 
 <a href="https://www.thinktopic.com"><img src="https://cloud.githubusercontent.com/assets/17600203/21554632/6257d9b0-cdce-11e6-8fc6-1a04ec8e9664.jpg" width="200"/></a>
 
