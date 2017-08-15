@@ -6,7 +6,7 @@
 
 Add this to your project.clj:
 ```
-[thinktopic/think.config "0.3.1"]
+[thinktopic/think.config "0.3.3"]
 ```
 
 The library works by reading config files named `*-config.edn` from the resources
@@ -106,5 +106,5 @@ beyond a standard config reader.
   means that they can be set using environment variables and read as actual
   types within the code without having to perform something like `read-string`
   on each of them.
-* There is a fairly simple way to map them to 
+* There is a fairly simple way to map them to
   [command line parameters](examples/tools-cli/src/tools_cli/core.clj).
