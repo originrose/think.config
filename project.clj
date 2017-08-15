@@ -10,4 +10,7 @@
 
   :profiles {:test {:resource-paths ["test/resources"]
                     :env {:overwrite "80"
-                          :env-config-overwrite "true"}}})
+                          :env-config-overwrite "true"
+                          :complex-type-env-overwrite-map "{:a 1 :b 3}"
+                          :complex-type-env-overwrite-vec "[:c :b :a]"
+                          :complex-type-env-overwrite-seq "(:c :b :a)"}}})

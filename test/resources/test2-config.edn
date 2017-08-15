@@ -7,4 +7,10 @@
  :app-config-overwrite 0
  :user-config-overwrite 0
  :env-config-overwrite false
+ :complex-type-map {:a 1 :b 2}
+ :complex-type-env-overwrite-map {:a 1 :b 2}
+ :complex-type-seq (:a :b :c)
+ :complex-type-env-overwrite-seq (:a :b :c)
+ :complex-type-vec [:a :b :c]
+ :complex-type-env-overwrite-vec [:a :b :c]
  }

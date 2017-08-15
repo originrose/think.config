@@ -36,18 +36,40 @@
   (reduce (fn [dest-map [k v]]
             (if-not (contains? dest-map k)
               (assoc dest-map k v)
-              (let [d (get dest-map k)]
-                (cond
-                  (nil? d) (assoc dest-map k v)
-                  (string? d) (assoc dest-map k (str v))
-                  (float? d) (assoc dest-map k (Double. (str v)))
-                  (integer? d) (assoc dest-map k (Integer. (str v)))
-                  (keyword? d) (assoc dest-map k
-                                      (if (and (string? v) (not-empty v) (= \: (first v)))
-                                        (keyword (subs v 1))
-                                        (keyword v)))
-                  (instance? Boolean d) (assoc dest-map k (boolean (Boolean. (str v))))
-                  :default (assoc dest-map k (edn/read-string  v))))))
+              (let [d (get dest-map k)
+                    bad-type-fn (fn [x type_]
+                                  (->> (format "Config value: %s should be a %s." x type_)
+                                       (IllegalArgumentException.)
+                                       (throw)))]
+                (->> (cond
+                       (nil? d) v
+                       (string? d) (str v)
+                       (float? d) (Double. (str v))
+                       (integer? d) (Integer. (str v))
+                       (keyword? d) (if (and (string? v) (not-empty v) (= \: (first v)))
+                                      (keyword (subs v 1))
+                                      (keyword v))
+                       (instance? Boolean d) (boolean (Boolean. (str v)))
+                       (map? d) (cond
+                                  (map? v) v
+                                  (string? v) (->> (edn/read-string v)
+                                                   ((fn [x] (if (map? x) x
+                                                              (bad-type-fn x "map")))))
+                                  :default (bad-type-fn v "map"))
+                       (seq? d) (cond
+                                  (seq? v) v
+                                  (string? v) (->> (edn/read-string v)
+                                                   ((fn [x] (if (seq? x) x
+                                                              (bad-type-fn x "seq")))))
+                                  :default (bad-type-fn v "seq"))
+                       (vector? d) (cond
+                                     (vector? v) v
+                                     (string? v) (->> (edn/read-string v)
+                                                      ((fn [x] (if (vector? x) x
+                                                                 (bad-type-fn x "seq")))))
+                                     :default (bad-type-fn v "seq"))
+                       :default (edn/read-string  v))
+                     (assoc dest-map k)))))
           dest
           src))
 

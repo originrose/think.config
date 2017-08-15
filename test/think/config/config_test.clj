@@ -66,3 +66,19 @@
 (deftest file-order-test
   (testing "Make sure files are merged in reverse-alphabetical order."
     (is (= (get-config :file-order-overwrite) true))))
+
+(deftest complex-types-test
+  (testing "Make sure that complex types can be properly handled."
+    (is (map? (get-config :complex-type-map)))
+    (is (seq? (get-config :complex-type-seq)))
+    (is (vector? (get-config :complex-type-vec)))
+    (is (map? (get-config :complex-type-env-overwrite-map)))
+    (is (= (:b (get-config :complex-type-env-overwrite-map)) 3))
+    (is (= (last (get-config :complex-type-env-overwrite-seq)) :a))
+    (is (= (last (get-config :complex-type-env-overwrite-vec)) :a))
+
+    (with-config [:complex-type-map "{:a 1 :b 4}"]
+      (is (= (:b (get-config :complex-type-map)) 4)))
+
+    (is (thrown? IllegalArgumentException (with-config [:complex-type-map [:a :b :c]])))
+    (is (thrown? IllegalArgumentException (with-config [:complex-type-map "[:a :b :c]"])))))
