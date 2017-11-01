@@ -97,7 +97,6 @@
                                   ((fn [x] (assoc x :boolean boolean-val)))
                                   ((fn [x] (with-out-str (clojure.pprint/pprint x))))
                                   (spit boolean-source)))]
-
       (write-boolean-fn (not old-boolean-val))
       (reload-config!)
       (is (= (get-config :boolean) (not old-boolean-val)))
