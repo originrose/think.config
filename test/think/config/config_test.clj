@@ -1,6 +1,8 @@
 (ns think.config.config-test
   (:require [clojure.set :as set]
             [clojure.string :as s]
+            [clojure.java.io :as io]
+            [clojure.edn :as edn]
             [clojure.test :refer :all]
             [think.config.core :refer :all]))
 
@@ -82,3 +84,24 @@
 
     (is (thrown? IllegalArgumentException (with-config [:complex-type-map [:a :b :c]])))
     (is (thrown? IllegalArgumentException (with-config [:complex-type-map "[:a :b :c]"])))))
+
+
+(deftest reload-config-test
+  (testing "Make sure that we can reload the config and get new values from .edn files"
+    (let [old-boolean-val (get-config :boolean)
+          boolean-source (str "test/resources/" (get *config-sources* :boolean))
+          write-boolean-fn (fn [boolean-val]
+                             (->> boolean-source
+                                  (io/file)
+                                  (slurp)
+                                  (edn/read-string)
+                                  ((fn [x] (assoc x :boolean boolean-val)))
+                                  ((fn [x] (with-out-str (clojure.pprint/pprint x))))
+                                  (spit boolean-source)))]
+
+      (write-boolean-fn (not old-boolean-val))
+      (reload-config)
+      (is (= (get-config :boolean) (not old-boolean-val)))
+      (write-boolean-fn old-boolean-val)
+      (reload-config)
+      (is (= (get-config :boolean) old-boolean-val)))))
