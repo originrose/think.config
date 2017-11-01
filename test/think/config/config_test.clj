@@ -85,7 +85,6 @@
     (is (thrown? IllegalArgumentException (with-config [:complex-type-map [:a :b :c]])))
     (is (thrown? IllegalArgumentException (with-config [:complex-type-map "[:a :b :c]"])))))
 
-
 (deftest reload-config-test
   (testing "Make sure that we can reload the config and get new values from .edn files"
     (let [old-boolean-val (get-config :boolean)
