@@ -137,7 +137,7 @@
     (alter-var-root #'*config-map* (fn [_] (build-config))))
   *config-map*)
 
-(defn reload-config
+(defn reload-config!
   "Refreshes the config (e.g. re-reading .edn files)"
   []
   (alter-var-root #'*config-map* (fn [_] nil)))

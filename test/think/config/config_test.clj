@@ -99,8 +99,8 @@
                                   (spit boolean-source)))]
 
       (write-boolean-fn (not old-boolean-val))
-      (reload-config)
+      (reload-config!)
       (is (= (get-config :boolean) (not old-boolean-val)))
       (write-boolean-fn old-boolean-val)
-      (reload-config)
+      (reload-config!)
       (is (= (get-config :boolean) old-boolean-val)))))
