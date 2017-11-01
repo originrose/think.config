@@ -1,16 +1,14 @@
-{
- :number 42
- :string "hello world"
- :boolean true
- :overwrite 30
- :file-order-overwrite false
- :app-config-overwrite 0
- :user-config-overwrite 0
- :env-config-overwrite false
- :complex-type-map {:a 1 :b 2}
- :complex-type-env-overwrite-map {:a 1 :b 2}
- :complex-type-seq (:a :b :c)
- :complex-type-env-overwrite-seq (:a :b :c)
- :complex-type-vec [:a :b :c]
- :complex-type-env-overwrite-vec [:a :b :c]
- }
+{:number 42,
+ :complex-type-env-overwrite-vec [:a :b :c],
+ :complex-type-env-overwrite-seq (:a :b :c),
+ :complex-type-seq (:a :b :c),
+ :app-config-overwrite 0,
+ :string "hello world",
+ :overwrite 30,
+ :complex-type-map {:a 1, :b 2},
+ :user-config-overwrite 0,
+ :complex-type-env-overwrite-map {:a 1, :b 2},
+ :file-order-overwrite false,
+ :env-config-overwrite false,
+ :boolean true,
+ :complex-type-vec [:a :b :c]}

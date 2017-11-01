@@ -8,7 +8,7 @@
 
 Add this to your project.clj:
 ```
-[thinktopic/think.config "0.3.3"]
+[thinktopic/think.config "0.3.4"]
 ```
 
 The library works by reading config files named `*-config.edn` from the resources
