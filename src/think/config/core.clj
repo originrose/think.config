@@ -180,10 +180,7 @@
 (defn get-config
   "Get app config. Accepts a key such as \"PORT\" or :port."
   ([k]
-   (let [retval (unchecked-get-config k)]
-     (when (nil? retval)
-       (throw (IllegalArgumentException. (format "Missing config value: %s" k))))
-     retval))
+   (unchecked-get-config k))
   ([k read-string?]
    (let [raw-config (get-config k)]
      (if (and (string? raw-config) read-string?)
