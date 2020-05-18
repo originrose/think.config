@@ -4,9 +4,9 @@
 
   :plugins [[lein-environ "1.0.0"]]
 
-  :dependencies [[org.clojure/clojure "1.8.0"]
+  :dependencies [[org.clojure/clojure "1.10.1"]
                  [environ "1.1.0"]
-                 [org.clojure/java.classpath "0.2.3"]]
+                 [org.clojure/java.classpath "1.0.0"]]
 
   :profiles {:test {:resource-paths ["test/resources"]
                     :env {:overwrite "80"

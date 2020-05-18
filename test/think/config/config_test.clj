@@ -8,8 +8,8 @@
 
 (deftest config-test
   (testing "Config Test"
-     (is (string? (get-config :os-arch)))
-     (is (thrown? IllegalArgumentException (get-config :some-bs-val)))))
+    (is (string? (get-config :os-arch)))
+    (is (nil? (get-config :some-bs-val)))))
 
 (deftest types-test
   (testing "Entries are properly coerced"
